@@ -1,0 +1,7 @@
+.BG{
+  background-color: #fcfcfc;
+  background-image:  radial-gradient(#155437 .5px, transparent .5px), radial-gradient(#155437 .5px, #fcfcfc 0.5px);
+  background-size: 20px 20px;
+  background-position: 0 0,10px 10px;
+  min-height: 100dvh;
+}
