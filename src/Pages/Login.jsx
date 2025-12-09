@@ -58,7 +58,7 @@ export default function Login() {
               <label className='text-sm font-bold text-gray-600'>Email *</label>
               <div className='flex gap-2'>
                 <input
-                  placeholder='example@email.com'
+                  placeholder='Enter your email'
                   type='text'
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -75,7 +75,7 @@ export default function Login() {
               <label className='text-sm font-bold text-gray-600'>Password *</label>
               <div className='flex gap-2'>
                 <input
-                  placeholder='strong-password'
+                  placeholder='Enter your password'
                   type={show ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}

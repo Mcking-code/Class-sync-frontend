@@ -1,7 +1,15 @@
-.BG{
-  background-color: #fcfcfc;
-  background-image:  radial-gradient(#155437 .5px, transparent .5px), radial-gradient(#155437 .5px, #fcfcfc 0.5px);
-  background-size: 20px 20px;
-  background-position: 0 0,10px 10px;
-  min-height: 100dvh;
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background:
+        linear-gradient(135deg, rgba(134, 160, 120, 0.45) 25%, transparent 25%) -50px 0/150px 150px,
+        linear-gradient(225deg, rgba(134, 160, 120, 0.45) 25%, transparent 25%) -50px 0/150px 150px,
+        linear-gradient(315deg, rgba(134, 160, 120, 0.45) 25%, transparent 25%) 0 0/150px 150px,
+        linear-gradient(45deg, rgba(134, 160, 120, 0.45) 25%, transparent 25%) 0 0/150px 150px;
+    opacity: 0.35;
+    z-index: -1;
 }

@@ -43,7 +43,7 @@ export default function Dashboard() {
 
 
   return (
-    <div className="flex justify-between gap-8 mt-4 p-4">
+    <div className="flex justify-between flex-col md:flex-row gap-8 mt-4 p-4">
       
       {/* Statistics Card */}
       <div className=" flex-col flex gap-4 border border-gray-200 rounded-xl p-4 bg-white  flex-1 border-t-4 border-t-primary">
