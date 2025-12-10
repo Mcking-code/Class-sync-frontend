@@ -8,3 +8,12 @@
 @utility flex-center {
  @apply flex justify-center items-center
 }
+
+@layer components{
+  .hover-anim{
+    @apply transition-all duration-300 ease-in-out shadow-sm
+  }
+  .hover-anim:hover{
+    @apply -translate-y-1 shadow-xl;
+  }
+}

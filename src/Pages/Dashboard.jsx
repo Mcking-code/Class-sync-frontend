@@ -1,8 +1,9 @@
 
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Plus,X } from "lucide-react";
-import { Filter } from "../assets/Filter.js";
+import { Plus,X,UserRoundPen} from "lucide-react";
+import { filterStudents } from "../assets/Filter.js";
+import { courseMap } from "../assets/Data.js";
 
 
 export default function Dashboard() {
@@ -24,22 +25,24 @@ export default function Dashboard() {
     return acc;
   }, {});
 
-  const courseMap = {
-    BSIT: "Bachelor of Science in Information Technology",
-    BSCS: "Bachelor of Science in Computer Science"
-  };
-
   const [search, setSearch] = useState('');
+  const [course, setCourse] = useState('All');
+  const [section, setSection] = useState('All');
+  const [yearLevel, setYearLevel] = useState('All');
+  const [sortBy, setSortBy] = useState('A-Z');
+
+
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [showAccountModal, setShowAccountModal] = useState(false);
 
-  const filteredStudents = Filter(students, search);
 
-  const firstyear = filteredStudents.filter((student) => student.yearLevel === '1').length;
-  const secondyear = filteredStudents.filter((student) => student.yearLevel === '2').length;
-  const thirdyear = filteredStudents.filter((student) => student.yearLevel === '3').length;
-  const fourthyear = filteredStudents.filter((student) => student.yearLevel === '4').length;
+  const filtered = filterStudents(students, search, course, section, yearLevel, sortBy);
+
+  const firstyear = filtered.filter((student) => student.yearLevel === '1').length;
+  const secondyear = filtered.filter((student) => student.yearLevel === '2').length;
+  const thirdyear = filtered.filter((student) => student.yearLevel === '3').length;
+  const fourthyear = filtered.filter((student) => student.yearLevel === '4').length;
 
 
   return (
@@ -52,12 +55,12 @@ export default function Dashboard() {
             <Plus size={16} strokeWidth={4}/> Create Account
           </button>
 
-        <div className="w-full flex-center justify-between border border-gray-200 shadow-sm rounded-lg p-4 px-8 border-l-4 border-l-primary">
+        <div className="hover-anim w-full flex-center justify-between border border-gray-200 rounded-lg p-4 px-8 border-l-4 border-l-primary">
           <h2 className="font-bold bg-primary text-white p-2 px-4 rounded-full">Total Students</h2>
           <h1 className="font-black text-2xl">{students.length}</h1>
         </div>
 
-        <div className="w-full flex-col flex-center items-start border border-gray-200 shadow-sm rounded-lg p-4 px-8 border-l-4 border-l-primary">
+        <div className="w-full flex-col flex-center items-start border border-gray-200 hover-anim rounded-lg p-4 px-8 border-l-4 border-l-primary">
           <h2 className="font-bold bg-primary text-white p-2 px-4 rounded-full">
             Courses
           </h2>
@@ -72,7 +75,7 @@ export default function Dashboard() {
           </ul>
         </div>
 
-        <div className="w-full flex-col flex-center items-start border border-gray-200 shadow-sm rounded-lg p-4 px-8 border-l-4 border-l-primary">
+        <div className="w-full flex-col flex-center items-start border border-gray-200 hover-anim rounded-lg p-4 px-8 border-l-4 border-l-primary">
           <h2 className="font-bold bg-primary text-white p-2 px-4 rounded-full">
             Year Level
           </h2>
@@ -102,7 +105,7 @@ export default function Dashboard() {
 
       </div>
 
-      <div className="flex flex-col gap-4 border border-gray-200 rounded-xl p-4 bg-white flex-1/4 h-165 border-t-4 border-t-primary">
+      <div className="flex flex-col gap-4 border border-gray-200 rounded-xl p-4 bg-white flex-1/4 min-h-165 border-t-4 border-t-primary">
         <div className="flex-center justify-between ">
           <h2 className="font-bold text-lg text-gray-600 italic ">Students List</h2>
           <button onClick={()=>setShowModal(true)} className="cursor-pointer bg-primary flex-center gap-1 text-sm font-bold px-4 p-2 rounded-2xl text-white">
@@ -110,9 +113,50 @@ export default function Dashboard() {
           </button>
         </div>
 
-        <div className="border rounded-lg border-gray-200 shadow-sm">
-          <input onChange={(e)=> setSearch(e.target.value)} type="text" className="px-4 p-2 outline-0 w-full" />
+        <div className="flex gap-4 items-center">
+          <div className="border flex-1 rounded-lg border-gray-200 shadow-sm">
+            <input onChange={(e)=> setSearch(e.target.value)} type="text" placeholder="Search Students" className="px-4 p-2 outline-0 w-full" />
+          </div>
+
+          <div className="border rounded-lg border-gray-200 shadow-sm">
+            <select onChange={(e) => setSortBy(e.target.value)} className="px-4 p-2 outline-0 w-full">
+              <option value="All">Sort By</option>
+              <option value="A-Z">A-Z (Ascending)</option>
+              <option value="Z-A">Z-A (Descending)</option>
+            </select>
+          </div>
+
+          <div className="border rounded-lg border-gray-200 shadow-sm">
+            <select onChange={(e) => setYearLevel(e.target.value)} className="px-4 p-2 outline-0 w-full">
+              <option value="All">Year Level</option>
+              <option value="1">First Year</option>
+              <option value="2">Second Year</option>
+              <option value="3">Third Year</option>
+              <option value="4">Fourth Year</option>
+            </select>
+          </div>
+
+          <div className="border rounded-lg border-gray-200 shadow-sm">
+            <select onChange={(e) => setSection(e.target.value)} className="px-4 p-2 outline-0 w-full">
+              <option value="All">Sections</option>
+              <option value="A">A</option>
+              <option value="B">B</option>
+              <option value="C">C</option>
+              <option value="C">D</option>
+            </select>
+          </div>
+
+          <div className="border rounded-lg border-gray-200 shadow-sm">
+            <select onChange={(e) => setCourse(e.target.value)} className="px-4 p-2 outline-0 w-full">
+              <option value="All">Courses</option>
+              <option value="BSIT">BSIT</option>
+              <option value="BSCS">BSCS</option>
+              <option value="BSCE">BSCE</option>
+            </select>
+          </div>
+
         </div>
+
 
         <div className="overflow-x-auto">
           <table className="min-w-full text-sm">
@@ -128,7 +172,7 @@ export default function Dashboard() {
               </tr>
             </thead>
             <tbody>
-              {filteredStudents.map((s) => (
+              {filtered.map((s) => (
                 <tr key={s.studentId} onClick={() => setSelectedStudent(s)} className="font-semibold transition hover:bg-primary/25 cursor-pointer">
                   <td className="p-4">{s.studentId}</td>
                   <td className="p-4 ">{s.lastName}</td>
@@ -139,7 +183,7 @@ export default function Dashboard() {
                   <td className="p-4 ">{s.course}</td>
                 </tr>
               ))}
-              {filteredStudents.length === 0 && (
+              {filtered.length === 0 && (
                 <tr>
                   <td colSpan="7" className="p-4 text-center font-semibold italic">
                     No results found
@@ -174,8 +218,6 @@ export default function Dashboard() {
     </div>
   );
 }
-
-
 
 export function CreateAccountForm({ onClose, getUsers }) {
   const [formData, setFormData] = useState({
@@ -301,13 +343,7 @@ export function CreateAccountForm({ onClose, getUsers }) {
   );
 }
 
-
-
 function StudentModal({ student, onClose, getStudents }) {
-  const courseMap = {
-    BSIT: "Bachelor of Science in Information Technology",
-    BSCS: "Bachelor of Science in Computer Science"
-  };
 
   const ArchiveStudent = () =>{
     fetch(`http://localhost:8080/api/students/${student.id}`, {
@@ -324,10 +360,25 @@ function StudentModal({ student, onClose, getStudents }) {
     });
   }
 
+  const [showEditModal, setShowEditModal] = useState(false);
+  
+  if (showEditModal) {
+    return (
+      <EditStudentModal
+        onClose={() => setShowEditModal(false)}
+        onUpdateCloseModal={onClose}
+        getStudents={getStudents}
+        selectedStudent={student}
+      />
+    );
+  }
+
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
       <div className="bg-white w-full max-w-md rounded-2xl shadow-xl p-6 relative">
-
+        <button onClick={() => setShowEditModal(true)} className="flex-center gap-1 absolute top-3 right-4 bg-primary text-white font-bold text-xs py-2 rounded-lg hover:opacity-90 px-4">
+         <UserRoundPen size={16} strokeWidth={3}/>  Edit
+        </button>
         {/* Profile Section */}
         <div className="flex flex-col items-center text-center mb-5">
           <img
@@ -563,7 +614,7 @@ function AddModal({ onClose,getStudents }) {
                 className="border border-gray-300 w-full rounded-lg p-2"
               >
                 <option value="">Select Course</option>
-                {["BSIT", "BSCS"].map((c) => (
+                {["BSIT", "BSCS", "BSCE"].map((c) => (
                   <option key={c} value={c}>{c}</option>
                 ))}
               </select>
@@ -593,6 +644,194 @@ function AddModal({ onClose,getStudents }) {
     </div>
   );
 }
+
+
+function EditStudentModal({ onClose, getStudents, selectedStudent,onUpdateCloseModal }) {
+  const [formData, setFormData] = useState({
+    studentId: "",
+    firstName: "",
+    lastName: "",
+    middleName: "",
+    section: "",
+    yearLevel: "",
+    course: "",
+  });
+
+  // Load selected student data into form
+  useEffect(() => {
+    if (selectedStudent) {
+      setFormData({
+        studentId: selectedStudent.studentId || "",
+        firstName: selectedStudent.firstName || "",
+        lastName: selectedStudent.lastName || "",
+        middleName: selectedStudent.middleName || "",
+        section: selectedStudent.section || "",
+        yearLevel: selectedStudent.yearLevel || "",
+        course: selectedStudent.course || "",
+      });
+    }
+  }, [selectedStudent]);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    fetch(`http://localhost:8080/api/students/${selectedStudent.id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error("Update failed");
+        alert("Student updated successfully!");
+        getStudents();
+        onUpdateCloseModal();
+      })
+      .catch((err) => alert(err.message));
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black/20 flex items-center justify-center z-50">
+      <div className="bg-white w-2xl rounded-lg shadow-lg p-4 relative">
+        
+        <div className="flex justify-between">
+          <h2 className="text-xl font-bold">Edit Student</h2>
+        </div>
+
+        <form onSubmit={handleSubmit}>
+          <div className="grid grid-cols-2 gap-4 mt-4">
+
+            {/* Student ID */}
+            <div className="col-span-2 flex flex-col gap-1">
+              <label className="text-sm font-semibold">Student ID</label>
+              <input
+                type="text"
+                name="studentId"
+                value={formData.studentId}
+                onChange={handleChange}
+                className="border border-gray-300 w-full rounded-lg p-2"
+              />
+            </div>
+
+            {/* First Name */}
+            <div className="flex flex-col gap-1">
+              <label className="text-sm font-semibold">First Name</label>
+              <input
+                type="text"
+                name="firstName"
+                value={formData.firstName}
+                onChange={handleChange}
+                className="border border-gray-300 w-full rounded-lg p-2"
+              />
+            </div>
+
+            {/* Last Name */}
+            <div className="flex flex-col gap-1">
+              <label className="text-sm font-semibold">Last Name</label>
+              <input
+                type="text"
+                name="lastName"
+                value={formData.lastName}
+                onChange={handleChange}
+                className="border border-gray-300 w-full rounded-lg p-2"
+              />
+            </div>
+
+            {/* Middle Name */}
+            <div className="flex flex-col gap-1">
+              <label className="text-sm font-semibold">Middle Name</label>
+              <input
+                type="text"
+                name="middleName"
+                value={formData.middleName}
+                onChange={handleChange}
+                className="border border-gray-300 w-full rounded-lg p-2"
+              />
+            </div>
+
+            {/* Section */}
+            <div className="flex flex-col gap-1">
+              <label className="text-sm font-semibold">Section</label>
+              <select
+                name="section"
+                value={formData.section}
+                onChange={handleChange}
+                className="border border-gray-300 w-full rounded-lg p-2"
+              >
+                <option value="">Select Section</option>
+                {["A", "B", "C", "D"].map((s) => (
+                  <option key={s} value={s}>{s}</option>
+                ))}
+              </select>
+            </div>
+
+            {/* Year Level */}
+            <div className="flex flex-col gap-1">
+              <label className="text-sm font-semibold">Year Level</label>
+              <select
+                name="yearLevel"
+                value={formData.yearLevel}
+                onChange={handleChange}
+                className="border border-gray-300 w-full rounded-lg p-2"
+              >
+                <option value="">Select Year</option>
+                {[1, 2, 3, 4].map((y) => (
+                  <option key={y} value={y}>{y}</option>
+                ))}
+              </select>
+            </div>
+
+            {/* Course */}
+            <div className="flex flex-col gap-1">
+              <label className="text-sm font-semibold">Course</label>
+              <select
+                name="course"
+                value={formData.course}
+                onChange={handleChange}
+                className="border border-gray-300 w-full rounded-lg p-2"
+              >
+                <option value="">Select Course</option>
+                {["BSIT", "BSCS", "BSCE"].map((c) => (
+                  <option key={c} value={c}>{c}</option>
+                ))}
+              </select>
+            </div>
+
+          </div>
+
+          <div className="flex justify-end gap-4 mt-4">
+            <button
+              type="button"
+              onClick={onClose}
+              className="border-2 border-gray-400 px-4 py-2 rounded-xl font-bold"
+            >
+              Cancel
+            </button>
+
+            <button
+              type="submit"
+              className="bg-primary px-4 py-2 rounded-xl text-white font-bold"
+            >
+              Update
+            </button>
+          </div>
+        </form>
+
+      </div>
+    </div>
+  );
+}
+
+
 
 
 
