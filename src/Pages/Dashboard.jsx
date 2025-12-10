@@ -1,9 +1,10 @@
 
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Plus,X,UserRoundPen} from "lucide-react";
+import { Plus,X,UserRoundPen, Calendar1, UsersRound} from "lucide-react";
 import { filterStudents } from "../assets/Filter.js";
 import { courseMap } from "../assets/Data.js";
+import Calendar from "../Components/Calendar.jsx";
 
 
 export default function Dashboard() {
@@ -44,6 +45,122 @@ export default function Dashboard() {
   const thirdyear = filtered.filter((student) => student.yearLevel === '3').length;
   const fourthyear = filtered.filter((student) => student.yearLevel === '4').length;
 
+  const [showCalendar, setShowCalendar] = useState(false);
+
+  const list = (
+      <div className="flex flex-col gap-4 border border-gray-200 rounded-xl p-4 bg-white flex-1/4 min-h-165 border-t-4 border-t-primary">
+        <div className="flex-center justify-between ">
+          <h2 className="font-bold text-lg text-gray-600 italic ">Students List</h2>
+          <div className="flex-center gap-4">
+            <button onClick={()=>setShowModal(true)} className="btn-anim cursor-pointer bg-primary flex-center gap-1 text-sm font-bold px-4 p-2 rounded-2xl text-white">
+            <Plus size={16} strokeWidth={4}/> Add Student
+            </button>
+
+            <button onClick={()=>setShowCalendar(true)} className="btn-anim cursor-pointer bg-primary flex-center gap-1 text-sm font-bold px-4 p-2 rounded-2xl text-white">
+             <Calendar1 size={16} strokeWidth={3} />  Calendar
+            </button>
+          </div>
+        </div>
+
+        <div className="flex gap-4 items-center">
+          <div className="border flex-1 rounded-lg border-gray-200 shadow-sm">
+            <input onChange={(e)=> setSearch(e.target.value)} type="text" placeholder="Search Students" className="px-4 p-2 outline-0 w-full" />
+          </div>
+
+          <div className="border rounded-lg border-gray-200 shadow-sm">
+            <select onChange={(e) => setSortBy(e.target.value)} className="px-4 p-2 outline-0 w-full">
+              <option value="All">Sort By</option>
+              <option value="A-Z">A-Z (Ascending)</option>
+              <option value="Z-A">Z-A (Descending)</option>
+            </select>
+          </div>
+
+          <div className="border rounded-lg border-gray-200 shadow-sm">
+            <select onChange={(e) => setYearLevel(e.target.value)} className="px-4 p-2 outline-0 w-full">
+              <option value="All">Year Level</option>
+              <option value="1">First Year</option>
+              <option value="2">Second Year</option>
+              <option value="3">Third Year</option>
+              <option value="4">Fourth Year</option>
+            </select>
+          </div>
+
+          <div className="border rounded-lg border-gray-200 shadow-sm">
+            <select onChange={(e) => setSection(e.target.value)} className="px-4 p-2 outline-0 w-full">
+              <option value="All">Sections</option>
+              <option value="A">A</option>
+              <option value="B">B</option>
+              <option value="C">C</option>
+              <option value="C">D</option>
+            </select>
+          </div>
+
+          <div className="border rounded-lg border-gray-200 shadow-sm">
+            <select onChange={(e) => setCourse(e.target.value)} className="px-4 p-2 outline-0 w-full">
+              <option value="All">Courses</option>
+              <option value="BSIT">BSIT</option>
+              <option value="BSCS">BSCS</option>
+              <option value="BSCE">BSCE</option>
+            </select>
+          </div>
+
+        </div>
+
+
+        <div className="overflow-x-auto max-h-140">
+          <table className="min-w-full text-sm">
+            <thead className="bg-primary text-white">
+              <tr>
+                <th className="p-4 border">Student ID</th>
+                <th className="p-4 border">Lastname</th>
+                <th className="p-4 border">Firstname</th>
+                <th className="p-4 border">Middle</th>
+                <th className="p-4 border">Year Level</th>
+                <th className="p-4 border">Section</th>
+                <th className="p-4 border">Course</th>
+                <th className="p-4 border">Date Added</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filtered.map((s) => (
+                <tr key={s.studentId} onClick={() => setSelectedStudent(s)} className="font-semibold transition hover:bg-primary/25 cursor-pointer">
+                  <td className="p-4">{s.studentId}</td>
+                  <td className="p-4 ">{s.lastName}</td>
+                  <td className="p-4 ">{s.firstName}</td>
+                  <td className="p-4 ">{s.middleName}</td>
+                  <td className="p-4 ">{s.yearLevel}</td>
+                  <td className="p-4 ">{s.section}</td>
+                  <td className="p-4 ">{s.course}</td>
+                  <td className="p-4 ">{s.date}</td>
+                </tr>
+              ))}
+              {filtered.length === 0 && (
+                <tr>
+                  <td colSpan="7" className="p-4 text-center font-semibold italic">
+                    No results found
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+  )
+
+  const calendar = (
+      <div className="flex flex-col gap-4 border border-gray-200 rounded-xl p-4 bg-white flex-1/4 min-h-165 border-t-4 border-t-primary">
+        <div className="flex-center justify-between ">
+          <h2 className="font-bold text-xl text-black ">Calendar</h2>
+
+          <button onClick={()=>setShowCalendar(false)} className="btn-anim cursor-pointer bg-primary flex-center gap-1 text-sm font-bold px-4 p-2 rounded-2xl text-white">
+           <UsersRound size={16} strokeWidth={3}/> Students List
+          </button>
+        </div>
+
+        <Calendar/>
+      </div>
+  )
+
 
   return (
     <div className="flex justify-between flex-col md:flex-row gap-8 mt-4 p-4">
@@ -51,7 +168,7 @@ export default function Dashboard() {
       {/* Statistics Card */}
       <div className=" flex-col flex gap-4 border border-gray-200 rounded-xl p-4 bg-white  flex-1 border-t-4 border-t-primary">
 
-          <button onClick={()=>setShowAccountModal(true)} className="cursor-pointer bg-primary flex-center gap-1 text-sm font-bold px-4 p-2 rounded-2xl text-white w-fit">
+          <button onClick={()=>setShowAccountModal(true)} className="btn-anim cursor-pointer bg-primary flex-center gap-1 text-sm font-bold px-4 p-2 rounded-2xl text-white w-fit">
             <Plus size={16} strokeWidth={4}/> Create Account
           </button>
 
@@ -105,95 +222,8 @@ export default function Dashboard() {
 
       </div>
 
-      <div className="flex flex-col gap-4 border border-gray-200 rounded-xl p-4 bg-white flex-1/4 min-h-165 border-t-4 border-t-primary">
-        <div className="flex-center justify-between ">
-          <h2 className="font-bold text-lg text-gray-600 italic ">Students List</h2>
-          <button onClick={()=>setShowModal(true)} className="cursor-pointer bg-primary flex-center gap-1 text-sm font-bold px-4 p-2 rounded-2xl text-white">
-           <Plus size={16} strokeWidth={4}/> Add Student
-          </button>
-        </div>
+      {showCalendar ? calendar : list}
 
-        <div className="flex gap-4 items-center">
-          <div className="border flex-1 rounded-lg border-gray-200 shadow-sm">
-            <input onChange={(e)=> setSearch(e.target.value)} type="text" placeholder="Search Students" className="px-4 p-2 outline-0 w-full" />
-          </div>
-
-          <div className="border rounded-lg border-gray-200 shadow-sm">
-            <select onChange={(e) => setSortBy(e.target.value)} className="px-4 p-2 outline-0 w-full">
-              <option value="All">Sort By</option>
-              <option value="A-Z">A-Z (Ascending)</option>
-              <option value="Z-A">Z-A (Descending)</option>
-            </select>
-          </div>
-
-          <div className="border rounded-lg border-gray-200 shadow-sm">
-            <select onChange={(e) => setYearLevel(e.target.value)} className="px-4 p-2 outline-0 w-full">
-              <option value="All">Year Level</option>
-              <option value="1">First Year</option>
-              <option value="2">Second Year</option>
-              <option value="3">Third Year</option>
-              <option value="4">Fourth Year</option>
-            </select>
-          </div>
-
-          <div className="border rounded-lg border-gray-200 shadow-sm">
-            <select onChange={(e) => setSection(e.target.value)} className="px-4 p-2 outline-0 w-full">
-              <option value="All">Sections</option>
-              <option value="A">A</option>
-              <option value="B">B</option>
-              <option value="C">C</option>
-              <option value="C">D</option>
-            </select>
-          </div>
-
-          <div className="border rounded-lg border-gray-200 shadow-sm">
-            <select onChange={(e) => setCourse(e.target.value)} className="px-4 p-2 outline-0 w-full">
-              <option value="All">Courses</option>
-              <option value="BSIT">BSIT</option>
-              <option value="BSCS">BSCS</option>
-              <option value="BSCE">BSCE</option>
-            </select>
-          </div>
-
-        </div>
-
-
-        <div className="overflow-x-auto">
-          <table className="min-w-full text-sm">
-            <thead className="bg-primary text-white">
-              <tr>
-                <th className="p-4 border">Student ID</th>
-                <th className="p-4 border">Lastname</th>
-                <th className="p-4 border">Firstname</th>
-                <th className="p-4 border">Middle</th>
-                <th className="p-4 border">Year Level</th>
-                <th className="p-4 border">Section</th>
-                <th className="p-4 border">Course</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filtered.map((s) => (
-                <tr key={s.studentId} onClick={() => setSelectedStudent(s)} className="font-semibold transition hover:bg-primary/25 cursor-pointer">
-                  <td className="p-4">{s.studentId}</td>
-                  <td className="p-4 ">{s.lastName}</td>
-                  <td className="p-4 ">{s.firstName}</td>
-                  <td className="p-4 ">{s.middleName}</td>
-                  <td className="p-4 ">{s.yearLevel}</td>
-                  <td className="p-4 ">{s.section}</td>
-                  <td className="p-4 ">{s.course}</td>
-                </tr>
-              ))}
-              {filtered.length === 0 && (
-                <tr>
-                  <td colSpan="7" className="p-4 text-center font-semibold italic">
-                    No results found
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-      </div>
       {selectedStudent && (
         <StudentModal
           student={selectedStudent}
@@ -266,7 +296,7 @@ export function CreateAccountForm({ onClose, getUsers }) {
         {/* Close button */}
         <button
           onClick={onClose}
-          className="absolute top-3 right-4 text-gray-500 hover:text-black text-2xl"
+          className="absolute btn-anim top-3 right-4 text-gray-500 btn-anim hover:text-black text-2xl"
         >
           ×
         </button>
@@ -321,18 +351,18 @@ export function CreateAccountForm({ onClose, getUsers }) {
           </div>
 
           {/* Buttons */}
-          <div className="flex justify-end gap-4 mt-4">
+          <div className=" flex justify-end gap-4 mt-4">
             <button
               type="button"
               onClick={handleClear}
-              className="border-2 border-primary px-4 py-2 rounded-xl text-primary font-bold hover:bg-gray-100"
+              className="btn-anim border-2 border-primary px-4 py-2 rounded-xl text-primary font-bold hover:bg-gray-100"
             >
               Clear
             </button>
 
             <button
               type="submit"
-              className="bg-primary px-4 py-2 rounded-xl text-white font-bold hover:opacity-90"
+              className="btn-anim bg-primary px-4 py-2 rounded-xl text-white font-bold hover:opacity-90"
             >
               Create Account
             </button>
@@ -376,9 +406,10 @@ function StudentModal({ student, onClose, getStudents }) {
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
       <div className="bg-white w-full max-w-md rounded-2xl shadow-xl p-6 relative">
-        <button onClick={() => setShowEditModal(true)} className="flex-center gap-1 absolute top-3 right-4 bg-primary text-white font-bold text-xs py-2 rounded-lg hover:opacity-90 px-4">
+        <button onClick={() => setShowEditModal(true)} className=" btn-anim flex-center gap-1 absolute top-3 right-4 bg-primary text-white font-bold text-xs py-2 rounded-lg hover:opacity-90 px-4">
          <UserRoundPen size={16} strokeWidth={3}/>  Edit
         </button>
+
         {/* Profile Section */}
         <div className="flex flex-col items-center text-center mb-5">
           <img
@@ -413,14 +444,14 @@ function StudentModal({ student, onClose, getStudents }) {
         <div className="flex flex-row-reverse gap-8 font-bold">
           <button
             onClick={onClose}
-            className="mt-6 cursor-pointer w-full bg-primary text-white py-2 rounded-lg hover:opacity-90"
+            className="mt-6 btn-anim cursor-pointer w-full bg-primary text-white py-2 rounded-lg hover:opacity-90"
           >
             Close
           </button>
 
                   <button
             onClick={ArchiveStudent}
-            className="mt-6 w-full cursor-pointer border-2 border-primary text-primary py-2 rounded-lg "
+            className="mt-6 w-full btn-anim cursor-pointer border-2 border-primary text-primary py-2 rounded-lg "
           >
             Archive Student
           </button>
@@ -441,6 +472,7 @@ function AddModal({ onClose,getStudents }) {
     yearLevel: "",
     course: "",
     status: "Active",
+    date: new Date().toISOString().split('T')[0],
   });
 
   const handleChange = (e) => {
@@ -490,7 +522,7 @@ function AddModal({ onClose,getStudents }) {
           <h2 className="text-xl font-bold">Student Form</h2>
           <button
             onClick={onClose}
-            className="cursor-pointer text-gray-500 hover:text-black text-xl"
+            className="btn-anim cursor-pointer text-gray-500 hover:text-black text-xl"
           >
             <X size={20} strokeWidth={2} />
           </button>
@@ -614,7 +646,7 @@ function AddModal({ onClose,getStudents }) {
                 className="border border-gray-300 w-full rounded-lg p-2"
               >
                 <option value="">Select Course</option>
-                {["BSIT", "BSCS", "BSCE"].map((c) => (
+                {["BSIT", "BSCS", "BSCpE"].map((c) => (
                   <option key={c} value={c}>{c}</option>
                 ))}
               </select>
@@ -626,14 +658,14 @@ function AddModal({ onClose,getStudents }) {
             <button
               type="button"
               onClick={handleClear}
-              className="border-2 border-primary px-4 py-2 rounded-xl text-primary font-bold cursor-pointer"
+              className="border-2 btn-anim border-primary px-4 py-2 rounded-xl text-primary font-bold cursor-pointer"
             >
               Clear
             </button>
 
             <button
               type="submit"
-              className="bg-primary px-4 py-2 rounded-xl text-white font-bold cursor-pointer"
+              className="bg-primary btn-anim px-4 py-2 rounded-xl text-white font-bold cursor-pointer"
             >
               Submit
             </button>
@@ -800,7 +832,7 @@ function EditStudentModal({ onClose, getStudents, selectedStudent,onUpdateCloseM
                 className="border border-gray-300 w-full rounded-lg p-2"
               >
                 <option value="">Select Course</option>
-                {["BSIT", "BSCS", "BSCE"].map((c) => (
+                {["BSIT", "BSCS", "BSCpE"].map((c) => (
                   <option key={c} value={c}>{c}</option>
                 ))}
               </select>
@@ -812,14 +844,14 @@ function EditStudentModal({ onClose, getStudents, selectedStudent,onUpdateCloseM
             <button
               type="button"
               onClick={onClose}
-              className="border-2 border-gray-400 px-4 py-2 rounded-xl font-bold"
+              className="btn-anim border-2 border-gray-400 px-4 py-2 rounded-xl font-bold"
             >
               Cancel
             </button>
 
             <button
               type="submit"
-              className="bg-primary px-4 py-2 rounded-xl text-white font-bold"
+              className="btn-anim bg-primary px-4 py-2 rounded-xl text-white font-bold"
             >
               Update
             </button>

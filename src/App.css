@@ -16,4 +16,7 @@
   .hover-anim:hover{
     @apply -translate-y-1 shadow-xl;
   }
+  .btn-anim{
+    @apply transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95;
+  }
 }
